@@ -5,27 +5,38 @@ import { ShimmerUI } from "./ShimmerUI";
 
 function App() {
   const [apiRes, SetAPIRes] = useState([]);
-  const [dataPresent, SetDataPresent] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMemes();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 1 >=
+      document.documentElement.offsetHeight
+    ) {
+      fetchMemes();
+    }
+  };
 
   const fetchMemes = async () => {
     try {
-      SetDataPresent(false);
+      setLoading(true);
       const response = await fetch("https://meme-api.com/gimme/16");
-      const paresedRes = await response.json();
-      SetAPIRes(paresedRes.memes);
-      SetDataPresent(true);
+      const parsedRes = await response.json();
+      SetAPIRes((prevRes) => [...prevRes, ...parsedRes.memes]);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    fetchMemes();
-  }, []);
-
   return (
     <div className="home-page">
-      {!dataPresent ? (
+      {loading ? (
         <ShimmerUI />
       ) : (
         apiRes.map((data, index) => <Meme memeData={data} key={index} />)
