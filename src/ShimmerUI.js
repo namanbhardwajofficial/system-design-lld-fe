@@ -1,5 +1,4 @@
 export const ShimmerUI = () => {
-  console.log("inside shimmer ui");
   return (
     <div className="shimmer-container">
       {Array(16)
