@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useEffect, useState } from "react";
+import { Meme } from "./Meme";
+import { ShimmerUI } from "./ShimmerUI";
 
 function App() {
+  const [apiRes, SetAPIRes] = useState([]);
+  const [dataPresent, SetDataPresent] = useState(false);
+
+  const fetchMemes = async () => {
+    try {
+      SetDataPresent(false);
+      const response = await fetch("https://meme-api.com/gimme/16");
+      const paresedRes = await response.json();
+      SetAPIRes(paresedRes.memes);
+      SetDataPresent(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMemes();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="home-page">
+      {!dataPresent ? (
+        <ShimmerUI />
+      ) : (
+        apiRes.map((data, index) => <Meme memeData={data} key={index} />)
+      )}
     </div>
   );
 }
