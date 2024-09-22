@@ -1,46 +1,41 @@
 import "./App.css";
-import { useEffect, useState } from "react";
-import { Meme } from "./Meme";
-import { ShimmerUI } from "./ShimmerUI";
+import { useEffect } from "react";
 
 function App() {
-  const [apiRes, SetAPIRes] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchMemes();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop + 1 >=
-      document.documentElement.offsetHeight
-    ) {
-      fetchMemes();
-    }
+  const handleClick = (e) => {
+    console.log(e);
   };
 
-  const fetchMemes = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch("https://meme-api.com/gimme/16");
-      const parsedRes = await response.json();
-      SetAPIRes((prevRes) => [...prevRes, ...parsedRes.memes]);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
+  useEffect(() => {
+    handleClick();
+  }, []);
+
+  const setLanguage = () => {
+    
   };
 
   return (
     <div className="home-page">
-      {loading ? (
-        <ShimmerUI />
-      ) : (
-        apiRes.map((data, index) => <Meme memeData={data} key={index} />)
-      )}
+      <nav className="nav-bar">
+        <ul>About Us</ul>
+        <ul>Home</ul>
+        <ul>Contact Us</ul>
+        <ul>Product</ul>
+        <select
+          className="dropdown"
+          onChange={(e) => setLanguage(e.target.value)}
+        >
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="mal">Malyalam</option>
+          <option value="tam">Tamil</option>
+        </select>
+      </nav>
+      <div className="body">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
   );
 }
